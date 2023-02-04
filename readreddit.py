@@ -17,27 +17,25 @@ if __name__ == '__main__':
     top_posts = {
         "posts": []
     }
-    for submission in subreddit.hot(limit = int(args['vids'])):
-        print(submission.title)
+    for index, submission in enumerate(subreddit.hot(limit = int(args['vids']))):
         submission.comments.replace_more(limit=None)
-
+        print(f"Scraping Post {index + 1}")
         post_length = 0
         top_comments = []
         for top_level_comment in submission.comments:
             post_length += len(top_level_comment.body)
-            print(top_level_comment.body)
             top_comments.append(top_level_comment.body)
             if(post_length >= MAXCHARS):
                 break
 
         top_posts['posts'].append({
-            "posts": submission.title,
+            "post": submission.title,
             "top_comments": top_comments
         })
 
-        print('=' * 50)
 
-    
     json_object = json.dumps(top_posts, indent=4)
-    with open("sample.json", "w") as outfile:
+    with open("posts.json", "w") as outfile:
         outfile.write(json_object)
+    
+    print("")
